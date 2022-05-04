@@ -1,0 +1,45 @@
+#!groovy
+// Check ub1 properties
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent { 
+        label 'master'
+        }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
+    stages {
+        stage("Login docker") {
+            steps {
+                echo "============ Docker login ============="
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_visotskiy', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
+                    sh """
+                    docker login -u $USERNAME -p $PASSWORD
+                    """
+                }
+            }
+        }
+        stage("Create docker") {
+            steps {
+                echo "============ start building image ============="
+                sh 'docker build -t visotskiyw4o/testb:0.1 . '
+            }
+        }
+        stage("Run docker") {
+            steps {
+                sh 'docker run testb:0.1'
+            }
+        }
+        stage("Push docker to docker hub") {
+            steps {
+                sh '''
+                docker push visotskiyw4o/testb:0.1
+                '''
+            }
+        }
+
+    }
+
+}
