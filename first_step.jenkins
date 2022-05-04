@@ -16,7 +16,7 @@ pipeline {
                 echo "============ Docker login ============="
                 withCredentials([usernamePassword(credentialsId: 'dockerhub_kevin', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
                     sh """
-                    docker login -u $USERNAME -p $PASSWORD
+                    sudo docker login -u $USERNAME -p $PASSWORD
                     """
                 }
             }
@@ -24,18 +24,18 @@ pipeline {
         stage("Create docker") {
             steps {
                 echo "============ start building image ============="
-                sh 'docker build -t kevinturtle/testb:0.1 . '
+                sh 'sudo docker build -t kevinturtle/testb:0.1 . '
             }
         }
         stage("Run docker") {
             steps {
-                sh 'docker run kevinturtle/testb:0.1'
+                sh 'sudo docker run kevinturtle/testb:0.1'
             }
         }
         stage("Push docker to docker hub") {
             steps {
                 sh '''
-                docker push kevinturtle/testb:0.1
+                sudo docker push kevinturtle/testb:0.1
                 '''
             }
         }
