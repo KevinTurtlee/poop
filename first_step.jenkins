@@ -17,6 +17,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub_kevin', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
                     sh """
                     sudo docker login -u $USERNAME -p $PASSWORD
+                    12321876
                     """
                 }
             }
